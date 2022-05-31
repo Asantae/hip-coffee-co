@@ -21,27 +21,35 @@ body{
 .main-container {
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 #login-forms-button{
     outline: none;
     border: none;
-    padding: 5px;
+    padding: 2px;
     margin-bottom: 10px;
-    background-color: blue;
+    background-color: hsl(237, 45%, 20%, .55);
     font-size: 30px;
     color: white;
-    border-radius: 10px;
+    border-radius: 3px;
+    position: absolute;
+    border: 1px solid hsl(214, 47%, 23%);
+    top: 280px;
 }
 
- #cashier-login, #barista-login {
-
+#admin-login, #cashier-login, #barista-login {
     opacity: 0;
+    pointer-events: none;
 }
 
-.admin-login.show, .cashier-login.show, .barista-login.show {
+#admin-login.show, #cashier-login.show, #barista-login.show {
     opacity: 1;
     pointer-events: auto;
+}
+
+.login {
+    position: fixed;
 }
 
 form {
@@ -49,13 +57,12 @@ form {
     width: 100%;
     height: 100%;
     padding: 25px;
-}
-#admin-form{
     display: flex;
     flex-direction: column;
 }
 
-.form-items{
+
+.form-name, .form-password{
     outline: none;
     border: none;
     background-color: transparent;

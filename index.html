@@ -11,31 +11,40 @@
     <body>
         <main>
             <div class="main-container">
-                <label for="login-form"></label>
-                <select name="login-forms" id="login-forms-button">
-                    <option value="admin-login">Admin</option>
-                    <option value="cashier-login" selected>Cashier</option>
-                    <option value="barista-login">Barista</option>
-                </select>
+                    <select name="login-forms" id="login-forms-button">
+                        <option value="admin-login" >Admin</option>
+                        <option value="cashier-login" selected>Cashier</option>
+                        <option value="barista-login">Barista</option>
+                    </select>
                 <div class="login" id="admin-login">
-                    <form id="admin-form" method="POST" onsubmit="event.preventDefault(); validateForm();">
-                        <input name="name" type="text" class="form-items" id="form-name" placeholder="Username">
+                    <form id="admin-form" method="POST" onsubmit="event.preventDefault(); validateForm(0);">
+                        <span>Admin Login</span>
+                        <input name="name" type="text" class="form-name" placeholder="Username">
                         <small class="error"></small>
-                        <input name="name" type="text" class="form-items" id="form-password" placeholder="Password">
+                        <input name="name" type="text" class="form-password" placeholder="Password">
                         <small class="error"></small>
-
                         <button id="form-submit" type="submit" value="Send">Send</button>
                     </form>
                 </div> 
                 <div class="login" id="cashier-login">
-                    <form id="cashier-form">
-                        
+                    <form id="cashier-form" method="POST" onsubmit="event.preventDefault(); validateForm(1);">
+                        <span>Cashier Login</span>
+                        <input name="name" type="text" class="form-name" placeholder="Username">
+                        <small class="error"></small>
+                        <input name="name" type="text" class="form-password" placeholder="Password">
+                        <small class="error"></small>
+                        <button id="form-submit" type="submit" value="Send">Send</button>
                     </form>
                 </div> 
                 <div class="login" id="barista-login">
-                <form id="barista-form">
-                    
-                </form>
+                    <form id="barista-form" method="POST" onsubmit="event.preventDefault(); validateForm(2);">
+                        <span>Barista Login</span>
+                            <input name="name" type="text" class="form-name" placeholder="Username">
+                            <small class="error"></small>
+                            <input name="name" type="text" class="form-password" placeholder="Password">
+                            <small class="error"></small>
+                            <button id="form-submit" type="submit" value="Send">Send</button>
+                    </form>
                 </div>  
             </div>
         </main>
