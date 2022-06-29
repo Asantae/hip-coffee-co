@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/login.js" defer></script>
+    <title>Home</title>
+</head>
+    <body>
+        <main>
+            <div class="main-container">
+                <div class="login" id="admin-login">
+                    <form class="login-form" method="POST" onsubmit="event.preventDefault(); validateForm(0);">
+                        <span>Employee Login</span>
+                        <input name="name" type="text" class="login-name" placeholder="Username">
+                        <small class="error"></small>
+                        <input name="name" type="password" class="login-password" placeholder="Password">
+                        <small class="error"></small>
+                        <button id="form-submit-button" type="submit" value="Send">Send</button>
+                        <a class="new-page-link" href="register.html">Register as a new employee..</a>
+                        <a class="new-page-link" href="change-password.html">Forgot password..</a>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

@@ -1,42 +1,63 @@
-const http = require('http');
-const fs = require('fs')
-const url = require('url');
-const querystring = require('querystring');
-const figlet = require('figlet')
+const env = require('dotenv').config()
+const express = require('express')
+const path = require('path')
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+const User = require('./model/user')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
-const server = http.createServer((req, res) => {
-  const page = url.parse(req.url).pathname;
-  const params = querystring.parse(url.parse(req.url).query);
-  console.log(page);
-  if (page == '/') {
-    fs.readFile('index.html', function(err, data) {
-      res.writeHead(200, {'Content-Type': 'text/html'});
-      res.write(data);
-      res.end();
-    });
-  }
-  else if (page == '/css/main.css'){
-    fs.readFile('css/main.css', function(err, data) {
-      res.write(data);
-      res.end();
-    });
-  }else if (page == '/js/login.js'){
-    fs.readFile('js/login.js', function(err, data) {
-      res.writeHead(200, {'Content-Type': 'text/javascript'});
-      res.write(data);
-      res.end();
-    });
-  }else{
-    figlet('404!!', function(err, data) {
-      if (err) {
-          console.log('Something went wrong...');
-          console.dir(err);
-          return;
-      }
-      res.write(data);
-      res.end();
-    });
-  }
-});
 
-server.listen(8000);
+mongoose.connect(process.env.mongoBase, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+
+const app = express()
+app.use(bodyParser.json())
+
+app.use(express.static(__dirname + '/public'))
+
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname + '/public/login.html'))
+})
+
+app.post('/api/register', async (req, res) => {
+    console.log(req.body)
+    
+    const { username, password: plainTextPassword } = req.body
+
+    if(!username || typeof username !== 'string') {
+        return res.json({status: 'error', error: 'Invalid Username'})
+    }
+
+    if (!plainTextPassword || typeof plainTextPassword !== 'string') {
+        return res.json({ status: 'error', error: 'Invalid Password'})
+    }
+
+    if (plainTextPassword.length < 5) {
+        return res.json({ status: 'error',  error: 'Password must be 6 characters or longer'})
+    }
+
+    const password = await bcrypt.hash(plainTextPassword, 15)
+
+    try {
+        const response = await User.create({
+            username,
+            password
+        })
+        console.log("user created successfully", response)
+    } catch(error){
+        if(error.code === 11000){
+            return res.json({status: 'error', error: 'This username already exists'})
+        }
+        throw error
+        console.log(JSON.stringify(error))
+    }
+    res.json({ status: 'ok'})
+    
+})
+
+app.listen(process.env.PORT, () => {
+    console.log(`listening on port ${process.env.PORT}`)
+})
