@@ -30,6 +30,7 @@
 - CSS3
 - Javascript
 - Node.js
+- MongoDb
 
 ### What I learned
 
