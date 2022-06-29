@@ -1,54 +1,32 @@
 //get data
-const usernameInput = document.querySelectorAll(".login-name");
-const passwordInput = document.querySelectorAll(".login-password");
+const loginForm = document.querySelector('#login-form');
+const usernameInput = document.querySelector(".login-name");
+const passwordInput = document.querySelector(".login-password");
 const errorNodes = document.querySelectorAll(".error");
 
 //validate data
 function validateForm(form){
+    clearMessages()
     let errorFlag = false;
-    if(form == 0){
-        if(usernameInput[form].value.length < 1){
-            errorNodes[0].innerText = "Username cannot be blank";
-            usernameInput[0].classList.add("error-border");
-            errorFlag = true;
-        }
-        if(passwordInput[form].value.length < 1){
-            errorNodes[1].innerText = "Password cannot be blank";
-            passwordInput[0].classList.add("error-border");
-            errorFlag = true;
-        }
+    if(usernameInput.value.length < 1){
+        errorNodes[0].innerText = "Username cannot be blank";
+        usernameInput.classList.add("error-border");
+        errorFlag = true;
     }
-    else if(form == 1){
-        if(usernameInput[form].value.length < 1){
-            errorNodes[2].innerText = "Username cannot be blank";
-            usernameInput[1].classList.add("error-border");
-            errorFlag = true;
-        }
-        if(passwordInput[form].value.length < 1){
-            errorNodes[3].innerText = "Password cannot be blank";
-            passwordInput[1].classList.add("error-border");
-            errorFlag = true;
-        }
+    if(passwordInput.value.length < 1){
+        errorNodes[1].innerText = "Password cannot be blank";
+        passwordInput.classList.add("error-border");
+        errorFlag = true;
     }
-    else if(form == 2){
-        if(usernameInput[form].value.length < 1){
-            errorNodes[4].innerText = "Username cannot be blank";
-            usernameInput[2].classList.add("error-border");
-            errorFlag = true;
-        }
-        if(passwordInput[form].value.length < 1){
-            errorNodes[5].innerText = "Password cannot be blank";
-            passwordInput[2].classList.add("error-border");
-            errorFlag = true;
-        }
+    if(!errorFlag){
+        loginForm.submit();
     }
-    if(!errorFlag && select.value == 'admin-login'){
-        adminForm.submit();
+}
+
+function clearMessages(){
+    for(let i = 0; i < errorNodes.length; i++){
+        errorNodes[i].innerText = "";
     }
-    if(!errorFlag && select.value == 'barista-login'){
-        baristaForm.submit();
-    }
-    if(!errorFlag && select.value == 'cashier-login'){
-        cashierForm.submit();
-    }
+    usernameInput.classList.remove("error-border");
+    passwordInput.classList.remove("error-border");
 }

@@ -15,7 +15,6 @@ mongoose.connect(process.env.mongoBase, {
 
 const app = express()
 app.use(bodyParser.json())
-
 app.use(express.static(__dirname + '/public'))
 
 app.get('/', function(req, res) {
@@ -23,8 +22,7 @@ app.get('/', function(req, res) {
 })
 
 app.post('/api/register', async (req, res) => {
-    console.log(req.body)
-    
+
     const { username, password: plainTextPassword } = req.body
 
     if(!username || typeof username !== 'string') {
