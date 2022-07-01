@@ -2,6 +2,7 @@
 const registrationForm = document.querySelector('#registration-form');
 const usernameInput = document.querySelector(".login-name");
 const passwordInput = document.querySelector(".login-password");
+const reEnteredPassInput = document.querySelector("#reEnteredPass")
 const errorNodes = document.querySelectorAll(".error");
 registrationForm.addEventListener('submit', registerUser)
 
@@ -19,7 +20,7 @@ function validateForm(){
         usernameInput.classList.add("error-border");
         errorFlag = true;
     }
-    if(!usernameInput.value || typeof usernameInput.value !== 'string'){
+    if((!usernameInput.value || typeof usernameInput.value !== 'string') && usernameInput.value >= 1){
         errorNodes[0].innerText = "Invalid username";
         usernameInput.classList.add("error-border");
         errorFlag = true;
@@ -34,6 +35,14 @@ function validateForm(){
         passwordInput.classList.add("error-border");
         errorFlag = true;
     }
+    if(reEnteredPassInput.value < 1){
+        errorNodes[2].innerText = "Please re-enter your password";
+        reEnteredPassInput.classList.add('error-border');
+    } 
+    if(passwordInput.value !== reEnteredPassInput.value){
+        errorNodes[2].innerText = "Passwords do not match";
+        reEnteredPassInput.classList.add('error-border');
+    } 
     if(!errorFlag){
         registerUser;
     }
@@ -45,16 +54,17 @@ function clearMessages(){
     }
     usernameInput.classList.remove("error-border");
     passwordInput.classList.remove("error-border");
+    reEnteredPassInput.classList.remove("error-border")
 }
 
 //saves username and password data to database
 async function registerUser(event){
     event.preventDefault()
-    clearMessages()
     validateForm()
 
     const username = document.getElementById('username').value
     const password = document.getElementById('password').value
+    const reEnteredPass = document.getElementById('reEnteredPass').value
 
     const result = await fetch('/api/register', {
         method: 'POST',
@@ -63,16 +73,14 @@ async function registerUser(event){
         },
         body: JSON.stringify({
             username,
-            password
+            password,
+            reEnteredPass
         })
     }).then((res) => res.json())
     if (result.status === 'ok') {
         console.log('successfully created user')
-    } else if(error.code === 11000) {
-        errorNodes[0].innerText = result.error;
-        usernameInput.classList.add("error-border");
-        errorFlag = true;
-    } else {
+    } else if(errorNodes[0].innerText == '' && errorNodes[2].innerText == ''){
+        errorNodes[0].innerText = "Username already exists";
         usernameInput.classList.add("error-border");
         passwordInput.classList.add("error-border");
         console.log(result.error)

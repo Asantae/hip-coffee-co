@@ -12,7 +12,7 @@ mongoose.connect(process.env.mongoBase, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
-
+console.log('connected to database')
 const app = express()
 app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'))
@@ -23,18 +23,30 @@ app.get('/', function(req, res) {
 
 app.post('/api/register', async (req, res) => {
 
-    const { username, password: plainTextPassword } = req.body
+    
+
+    const { username, password: plainTextPassword, reEnteredPass } = req.body
 
     if(!username || typeof username !== 'string') {
         return res.json({status: 'error', error: 'Invalid Username'})
+    }
+
+    if(username.length < 6) {
+        return res.json({status: 'error', error: 'Username must be 6 characters or longer'})
     }
 
     if (!plainTextPassword || typeof plainTextPassword !== 'string') {
         return res.json({ status: 'error', error: 'Invalid Password'})
     }
 
-    if (plainTextPassword.length < 5) {
-        return res.json({ status: 'error',  error: 'Password must be 6 characters or longer'})
+    if (plainTextPassword.length < 8) {
+        return res.json({ status: 'error',  error: 'Password must be 8 characters or longer'})
+    }
+
+    if (plainTextPassword !== reEnteredPass) {
+        console.log(plainTextPassword)
+        console.log(reEnteredPass)
+        return res.json({ status: 'error', error: 'The passwords do not match'})
     }
 
     const password = await bcrypt.hash(plainTextPassword, 15)
