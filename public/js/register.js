@@ -42,9 +42,6 @@ function validateForm(){
     if(passwordInput.value !== reEnteredPassInput.value){
         errorNodes[2].innerText = "Passwords do not match";
         reEnteredPassInput.classList.add('error-border');
-    } 
-    if(!errorFlag){
-        registerUser;
     }
 }
 
@@ -76,13 +73,17 @@ async function registerUser(event){
             password,
             reEnteredPass
         })
-    }).then((res) => res.json())
+    })
+    .then((res) => res.json())
+    console.log(result)
     if (result.status === 'ok') {
-        console.log('successfully created user')
+        alert(result.status)
+        window.location.href = 'login.html'
     } else if(errorNodes[0].innerText == '' && errorNodes[2].innerText == ''){
         errorNodes[0].innerText = "Username already exists";
         usernameInput.classList.add("error-border");
         passwordInput.classList.add("error-border");
-        console.log(result.error)
+        alert(result.error)
     }
+    console.log(result)
 }

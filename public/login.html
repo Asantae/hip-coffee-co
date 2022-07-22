@@ -12,11 +12,11 @@
         <main>
             <div class="main-container">
                 <div class="login">
-                    <form id="login-form" method="POST" onsubmit="event.preventDefault(); validateForm();">
+                    <form id="login-form">
                         <span>Employee Login</span>
-                        <input name="name" type="text" class="login-name" placeholder="Username">
+                        <input name="name" type="text" autocomplete="off" class="login-name" placeholder="Username" id="username">
                         <small class="error"></small>
-                        <input name="name" type="password" class="login-password" placeholder="Password">
+                        <input name="name" type="password" class="login-password" placeholder="Password" id="password">
                         <small class="error"></small>
                         <button id="form-submit-button" type="submit" value="Send">Send</button>
                         <a class="new-page-link" href="register.html">Register as a new employee..</a>

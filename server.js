@@ -21,10 +21,29 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/public/login.html'))
 })
 
+app.post('/api/login', async (req, res) => {
+    const { username, password } = req.body
+    const user = await User.findOne({ username }).lean()
+
+    if(!user) {
+        console.log('User doesnt exist or invalid username or password')
+        return res.json({ status:'error', error: 'Invalid username/password' })
+    }
+    console.log('the user exists')
+    if(await bcrypt.compare(password, user.password)){
+        console.log('the username password combination was successful')
+        const token = jwt.sign({
+            id: user._id,
+            username: user.username
+        }, process.env.JWT_SECRET)
+
+        return res.json({ status: 'ok', data: token})
+    }
+    res.json ({ status: 'ok', error: 'Invalid username/password' })
+    console.log('Invalid username or password')
+})
+
 app.post('/api/register', async (req, res) => {
-
-    
-
     const { username, password: plainTextPassword, reEnteredPass } = req.body
 
     if(!username || typeof username !== 'string') {
@@ -44,8 +63,6 @@ app.post('/api/register', async (req, res) => {
     }
 
     if (plainTextPassword !== reEnteredPass) {
-        console.log(plainTextPassword)
-        console.log(reEnteredPass)
         return res.json({ status: 'error', error: 'The passwords do not match'})
     }
 
@@ -57,15 +74,14 @@ app.post('/api/register', async (req, res) => {
             password
         })
         console.log("user created successfully", response)
+        res.json({ status: 'ok' })
+        
     } catch(error){
         if(error.code === 11000){
             return res.json({status: 'error', error: 'This username already exists'})
         }
         throw error
-        console.log(JSON.stringify(error))
     }
-    res.json({ status: 'ok'})
-    
 })
 
 app.listen(process.env.PORT, () => {
