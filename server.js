@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const User = require('./model/user')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const asyncHandler = require('express-async-handler')
 
 
 mongoose.connect(process.env.mongoBase, {
@@ -21,26 +22,31 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/public/login.html'))
 })
 
+
+
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body
     const user = await User.findOne({ username }).lean()
 
     if(!user) {
-        console.log('User doesnt exist or invalid username or password')
         return res.json({ status:'error', error: 'Invalid username/password' })
     }
-    console.log('the user exists')
-    if(await bcrypt.compare(password, user.password)){
-        console.log('the username password combination was successful')
+    if(user && (await bcrypt.compare(password, user.password))){
         const token = jwt.sign({
             id: user._id,
             username: user.username
-        }, process.env.JWT_SECRET)
-
+        }, process.env.JWT_SECRET, {
+            expiresIn: '12h'
+        })
+        console.log(token)
+        user.accessToken = token;
+        console.log(user.accessToken)
         return res.json({ status: 'ok', data: token})
+    } else {
+        res.json ({ status: 'ok', error: 'Invalid username/password' })
+        console.log('Invalid username or password')
     }
-    res.json ({ status: 'ok', error: 'Invalid username/password' })
-    console.log('Invalid username or password')
+    
 })
 
 app.post('/api/register', async (req, res) => {
@@ -74,7 +80,7 @@ app.post('/api/register', async (req, res) => {
             password
         })
         console.log("user created successfully", response)
-        res.json({ status: 'ok' })
+        return res.json({ status: 'ok', response })
         
     } catch(error){
         if(error.code === 11000){
@@ -83,6 +89,41 @@ app.post('/api/register', async (req, res) => {
         throw error
     }
 })
+
+//Token Authorization
+const protect = asyncHandler(async (req, res, next) => {
+    let token
+    
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+     try{
+         // Get token from header
+         token = req.headers.authorization.split(' ')[1]
+ 
+         //verify token
+         const decoded = jwt.verify(token, process.env.JWT_SECRET)
+ 
+         // Get user from the token
+         req.user = await User.findById(decoded.id).select('-password')
+ 
+         next()
+     } catch (error) {
+         console.log(error)
+         res.status(401)
+         throw new Error('Not Authorized')
+     }
+    }
+    if(!token) {
+     res.status(401)
+     throw new Error('Not Authorized No Token')
+    }
+ })
+ 
+ // Generate Token (JWT)
+ const generateToken = (id) => {
+     return jwt.sign({id}, process.env.JWT_SECRET, {
+         expiresIn: '30d',
+     })
+ }
 
 app.listen(process.env.PORT, () => {
     console.log(`listening on port ${process.env.PORT}`)

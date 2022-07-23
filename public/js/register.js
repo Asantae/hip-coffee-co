@@ -73,17 +73,12 @@ async function registerUser(event){
             password,
             reEnteredPass
         })
-    })
-    .then((res) => res.json())
-    console.log(result)
+    }).then((res) => res.json())
     if (result.status === 'ok') {
-        alert(result.status)
         window.location.href = 'login.html'
     } else if(errorNodes[0].innerText == '' && errorNodes[2].innerText == ''){
         errorNodes[0].innerText = "Username already exists";
         usernameInput.classList.add("error-border");
         passwordInput.classList.add("error-border");
-        alert(result.error)
     }
-    console.log(result)
 }

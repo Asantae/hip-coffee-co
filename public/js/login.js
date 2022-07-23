@@ -49,9 +49,8 @@ async function login(event){
         })
     }).then((res) => res.json())
     if (result.status === 'ok') {
-        console.log('Final Step')
         localStorage.setItem('token', result.data)
-        alert(result.data)
+        window.location.href = "dashboard.html"
     } else {
         alert(result.error)
     }
