@@ -32,15 +32,27 @@ app.post('/api/login', async (req, res) => {
         return res.json({ status:'error', error: 'Invalid username/password' })
     }
     if(user && (await bcrypt.compare(password, user.password))){
+        
         const token = jwt.sign({
             id: user._id,
-            username: user.username
+            username: user.username,
+            lastLoggedIn: new Date().toLocaleString('en-US') + " " + " timezone is in GMT"
         }, process.env.JWT_SECRET, {
             expiresIn: '12h'
         })
-        console.log(token)
-        user.accessToken = token;
-        console.log(user.accessToken)
+        // update certain fields in db
+        await User.findOneAndUpdate(
+            {
+                username: username,
+                accessToken: null,
+                loggedIn: false,
+            },
+            {
+                username: username,
+                accessToken: token,
+                loggedIn: true,
+            }
+        )
         return res.json({ status: 'ok', data: token})
     } else {
         res.json ({ status: 'ok', error: 'Invalid username/password' })
@@ -90,40 +102,9 @@ app.post('/api/register', async (req, res) => {
     }
 })
 
-//Token Authorization
-const protect = asyncHandler(async (req, res, next) => {
-    let token
-    
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
-     try{
-         // Get token from header
-         token = req.headers.authorization.split(' ')[1]
- 
-         //verify token
-         const decoded = jwt.verify(token, process.env.JWT_SECRET)
- 
-         // Get user from the token
-         req.user = await User.findById(decoded.id).select('-password')
- 
-         next()
-     } catch (error) {
-         console.log(error)
-         res.status(401)
-         throw new Error('Not Authorized')
-     }
-    }
-    if(!token) {
-     res.status(401)
-     throw new Error('Not Authorized No Token')
-    }
- })
- 
- // Generate Token (JWT)
- const generateToken = (id) => {
-     return jwt.sign({id}, process.env.JWT_SECRET, {
-         expiresIn: '30d',
-     })
- }
+app.post('api/dashboard', async (req, res) => {
+
+})
 
 app.listen(process.env.PORT, () => {
     console.log(`listening on port ${process.env.PORT}`)

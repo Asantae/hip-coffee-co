@@ -49,7 +49,7 @@ async function login(event){
         })
     }).then((res) => res.json())
     if (result.status === 'ok') {
-        localStorage.setItem('token', result.data)
+        sessionStorage.setItem('token', result.data)
         window.location.href = "dashboard.html"
     } else {
         alert(result.error)
