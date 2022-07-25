@@ -6,7 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/main.css">
     <script defer>
-        
+    async function loggedIn(){
+        if (result.status === 'ok') {
+            alert('You have logged in successfully')
+        } else {
+            console.log('You are still not logged in')
+        }
+    }
+    loggedIn()
     </script>
     <title>Dashboard</title>
 </head>

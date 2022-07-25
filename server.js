@@ -32,11 +32,12 @@ app.post('/api/login', async (req, res) => {
         return res.json({ status:'error', error: 'Invalid username/password' })
     }
     if(user && (await bcrypt.compare(password, user.password))){
-        
+        let lastLoggedInAt = new Date().toLocaleString('en-US') + " " + "(timezone is in EST)"
+        lastLoggedInAt.toString()
         const token = jwt.sign({
             id: user._id,
             username: user.username,
-            lastLoggedIn: new Date().toLocaleString('en-US') + " " + " timezone is in GMT"
+            lastLogged: lastLoggedInAt
         }, process.env.JWT_SECRET, {
             expiresIn: '12h'
         })
@@ -44,21 +45,55 @@ app.post('/api/login', async (req, res) => {
         await User.findOneAndUpdate(
             {
                 username: username,
-                accessToken: null,
-                loggedIn: false,
             },
             {
-                username: username,
                 accessToken: token,
                 loggedIn: true,
+                lastLogged: lastLoggedInAt,
             }
         )
-        return res.json({ status: 'ok', data: token})
-    } else {
-        res.json ({ status: 'ok', error: 'Invalid username/password' })
+        res.json({ 
+            status: 'ok',
+            token: token,
+            login: true,
+        })
+        } else {
+        res.json ({ 
+            status: 'ok', 
+            error: 'Invalid username/password',
+            login: false, 
+        })
         console.log('Invalid username or password')
-    }
+        }   
     
+})
+
+app.post('/api/dashboard', async (req, res) => {
+    const { token, login, status } = req.body
+    const accToken = token
+    console.log('inside of dashboard')
+    console.log(accToken)
+    //const { token, status, login} = req.body
+    if(token) {
+        /// Verify the token using jwt.verify method
+        const decode = jwt.verify(token, process.env.JWT_SECRET);
+
+        //  Return response with decode data
+        res.json({
+            login: true,
+            data: decode,
+            status: 'ok',
+        });
+        console.log(decode)
+    } else {
+        // Return with error is jwt does not match
+        res.json({
+            login: false,
+            data: "error",
+            error: 'something went wrong',
+        });
+        console.log('token doesnt exist here')
+    }
 })
 
 app.post('/api/register', async (req, res) => {
@@ -100,10 +135,6 @@ app.post('/api/register', async (req, res) => {
         }
         throw error
     }
-})
-
-app.post('api/dashboard', async (req, res) => {
-
 })
 
 app.listen(process.env.PORT, () => {
