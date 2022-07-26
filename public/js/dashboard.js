@@ -1,15 +1,19 @@
+function userDashboard(){
+    
+}
+
 async function verify(){
-    console.log('verifying user info')
+    const token =window.sessionStorage.getItem('token')
     const result = await fetch('/api/dashboard', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            username
+            token
         })
-    })
-    console.log(result)
+    }).then((res) => res.json())
+    console.log(result.data.username)
     if (result.status === 'ok') {
         alert('You have logged in successfully')
     } else {

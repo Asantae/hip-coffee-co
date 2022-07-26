@@ -31,7 +31,7 @@ function clearMessages(){
 }
 
 
-async function loginFunc(event){
+async function login(event){
     event.preventDefault()
     validateForm()
     console.log('starting login')
@@ -48,27 +48,10 @@ async function loginFunc(event){
             password
         })
     }).then((res) => res.json())
-    
-    console.log(result)
     if (result.status === 'ok' && result.login === true) {
         sessionStorage.setItem('token', result.token)
-        //window.location.href = 'dashboard.html'
+        window.location.href = 'dashboard.html'
     } else {
         alert(result)
     }
-}
-
-async function verify(result){
-    token = result.token;
-    login = result.login;
-    status = result.status;
-    await fetch('/api/dashboard', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            
-        })
-    }).then((res) => res.json())
 }

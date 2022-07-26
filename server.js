@@ -7,24 +7,31 @@ const User = require('./model/user')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const asyncHandler = require('express-async-handler')
-
+const app = express()
 
 mongoose.connect(process.env.mongoBase, {
     useNewUrlParser: true,
     useUnifiedTopology: true
+}).then(() => {
+    console.log("Successfully connected to database");
 })
-console.log('connected to database')
-const app = express()
+.catch((error) => {
+    console.log("database connection failed. exiting now...")
+    console.error(error)
+    process.exit(1)
+})
+
+app.set('view engine', 'ejs');
 app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'))
 
 app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname + '/public/login.html'))
+    res.render(path.join(__dirname + '/public/login.ejs'))
 })
 
 
 
-app.post('/api/login', async (req, res) => {
+app.post('/login', async (req, res) => {
     const { username, password } = req.body
     const user = await User.findOne({ username }).lean()
 
@@ -68,15 +75,13 @@ app.post('/api/login', async (req, res) => {
     
 })
 
-app.post('/api/dashboard', async (req, res) => {
-    const { token, login, status } = req.body
-    const accToken = token
-    console.log('inside of dashboard')
-    console.log(accToken)
-    //const { token, status, login} = req.body
-    if(token) {
+app.post('/dashboard', async (req, res) => {
+    const { token } = req.body
+    const user = await User.findOne({ token }).lean()
+
+    if(token && user && (user.accessToken === token)) {
         /// Verify the token using jwt.verify method
-        const decode = jwt.verify(token, process.env.JWT_SECRET);
+        const decode = jwt.verify(token, process.env.JWT_SECRET)
 
         //  Return response with decode data
         res.json({
@@ -84,9 +89,8 @@ app.post('/api/dashboard', async (req, res) => {
             data: decode,
             status: 'ok',
         });
-        console.log(decode)
     } else {
-        // Return with error is jwt does not match
+        // Return with error if jwt does not match
         res.json({
             login: false,
             data: "error",
@@ -96,7 +100,7 @@ app.post('/api/dashboard', async (req, res) => {
     }
 })
 
-app.post('/api/register', async (req, res) => {
+app.post('/register', async (req, res) => {
     const { username, password: plainTextPassword, reEnteredPass } = req.body
 
     if(!username || typeof username !== 'string') {
