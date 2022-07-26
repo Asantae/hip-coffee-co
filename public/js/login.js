@@ -38,7 +38,7 @@ async function login(event){
     const username = document.getElementById('username').value
     const password = document.getElementById('password').value
 
-    const result = await fetch('/api/login', {
+    const result = await fetch('/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -50,7 +50,7 @@ async function login(event){
     }).then((res) => res.json())
     if (result.status === 'ok' && result.login === true) {
         sessionStorage.setItem('token', result.token)
-        window.location.href = 'dashboard.html'
+        window.location.href = 'dashboard'
     } else {
         alert(result)
     }

@@ -4,7 +4,7 @@ function userDashboard(){
 
 async function verify(){
     const token =window.sessionStorage.getItem('token')
-    const result = await fetch('/api/dashboard', {
+    const result = await fetch('/dashboard', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

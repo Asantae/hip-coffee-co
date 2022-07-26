@@ -6,7 +6,6 @@ const mongoose = require('mongoose')
 const User = require('./model/user')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const asyncHandler = require('express-async-handler')
 const app = express()
 
 mongoose.connect(process.env.mongoBase, {
@@ -28,6 +27,14 @@ app.use(express.static(__dirname + '/public'))
 app.get('/', function(req, res) {
     res.render(path.join(__dirname + '/public/login.ejs'))
 })
+app.get('/register', function(req, res) {
+    res.render(path.join(__dirname + '/public/register.ejs'))
+})
+app.get('/dashboard', function(req, res) {
+    res.render(path.join(__dirname + '/public/dashboard.ejs'))
+})
+
+
 
 
 

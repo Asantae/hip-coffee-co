@@ -63,7 +63,7 @@ async function registerUser(event){
     const password = document.getElementById('password').value
     const reEnteredPass = document.getElementById('reEnteredPass').value
 
-    const result = await fetch('/api/register', {
+    const result = await fetch('/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
