@@ -49,6 +49,7 @@ async function login(event){
         })
     }).then((res) => res.json())
     if (result.status === 'ok' && result.login === true) {
+        window.sessionStorage.clear()
         sessionStorage.setItem('token', result.token)
         window.location.href = 'dashboard'
     } else {

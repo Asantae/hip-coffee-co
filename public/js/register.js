@@ -75,7 +75,7 @@ async function registerUser(event){
         })
     }).then((res) => res.json())
     if (result.status === 'ok') {
-        window.location.href = 'login.html'
+        window.location.href = 'login'
     } else if(errorNodes[0].innerText == '' && errorNodes[2].innerText == ''){
         errorNodes[0].innerText = "Username already exists";
         usernameInput.classList.add("error-border");

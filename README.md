@@ -31,6 +31,7 @@
 - Javascript
 - Node.js
 - MongoDb
+- ejs
 
 ### What I learned
 

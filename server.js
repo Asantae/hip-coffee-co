@@ -25,18 +25,20 @@ app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'))
 
 app.get('/', function(req, res) {
-    res.render(path.join(__dirname + '/public/login.ejs'))
+    res.render(path.join(__dirname + '/views/login.ejs'))
+})
+app.get('/login', function(req, res) {
+    res.render(path.join(__dirname + '/views/login.ejs'))
 })
 app.get('/register', function(req, res) {
-    res.render(path.join(__dirname + '/public/register.ejs'))
+    res.render(path.join(__dirname + '/views/register.ejs'))
 })
 app.get('/dashboard', function(req, res) {
-    res.render(path.join(__dirname + '/public/dashboard.ejs'))
+    res.render(path.join(__dirname + '/views/dashboard.ejs'))
 })
-
-
-
-
+app.get('/orders', function(req, res) {
+    res.render(path.join(__dirname + '/views/orders.ejs'))
+})
 
 app.post('/login', async (req, res) => {
     const { username, password } = req.body
@@ -86,7 +88,7 @@ app.post('/dashboard', async (req, res) => {
     const { token } = req.body
     const user = await User.findOne({ token }).lean()
 
-    if(token && user && (user.accessToken === token)) {
+    if(token && user) {
         /// Verify the token using jwt.verify method
         const decode = jwt.verify(token, process.env.JWT_SECRET)
 
