@@ -40,6 +40,47 @@ app.get('/orders', function(req, res) {
     res.render(path.join(__dirname + '/views/orders.ejs'))
 })
 
+app.post('/register', async (req, res) => {
+    const { username, password: plainTextPassword, reEnteredPass } = req.body
+
+    if(!username || typeof username !== 'string') {
+        return res.json({status: 'error', error: 'Invalid Username'})
+    }
+
+    if(username.length < 6) {
+        return res.json({status: 'error', error: 'Username must be 6 characters or longer'})
+    }
+
+    if (!plainTextPassword || typeof plainTextPassword !== 'string') {
+        return res.json({ status: 'error', error: 'Invalid Password'})
+    }
+
+    if (plainTextPassword.length < 8) {
+        return res.json({ status: 'error',  error: 'Password must be 8 characters or longer'})
+    }
+
+    if (plainTextPassword !== reEnteredPass) {
+        return res.json({ status: 'error', error: 'The passwords do not match'})
+    }
+
+    const password = await bcrypt.hash(plainTextPassword, 15)
+
+    try {
+        const response = await User.create({
+            username,
+            password
+        })
+        console.log("user created successfully", response)
+        return res.json({ status: 'ok', response })
+        
+    } catch(error){
+        if(error.code === 11000){
+            return res.json({status: 'error', error: 'This username already exists'})
+        }
+        throw error
+    }
+})
+
 app.post('/login', async (req, res) => {
     const { username, password } = req.body
     const user = await User.findOne({ username }).lean()
@@ -109,46 +150,9 @@ app.post('/dashboard', async (req, res) => {
     }
 })
 
-app.post('/register', async (req, res) => {
-    const { username, password: plainTextPassword, reEnteredPass } = req.body
-
-    if(!username || typeof username !== 'string') {
-        return res.json({status: 'error', error: 'Invalid Username'})
-    }
-
-    if(username.length < 6) {
-        return res.json({status: 'error', error: 'Username must be 6 characters or longer'})
-    }
-
-    if (!plainTextPassword || typeof plainTextPassword !== 'string') {
-        return res.json({ status: 'error', error: 'Invalid Password'})
-    }
-
-    if (plainTextPassword.length < 8) {
-        return res.json({ status: 'error',  error: 'Password must be 8 characters or longer'})
-    }
-
-    if (plainTextPassword !== reEnteredPass) {
-        return res.json({ status: 'error', error: 'The passwords do not match'})
-    }
-
-    const password = await bcrypt.hash(plainTextPassword, 15)
-
-    try {
-        const response = await User.create({
-            username,
-            password
-        })
-        console.log("user created successfully", response)
-        return res.json({ status: 'ok', response })
-        
-    } catch(error){
-        if(error.code === 11000){
-            return res.json({status: 'error', error: 'This username already exists'})
-        }
-        throw error
-    }
-})
+app.post('/orders'), async (req, res) => {
+    
+}
 
 app.listen(process.env.PORT, () => {
     console.log(`listening on port ${process.env.PORT}`)
