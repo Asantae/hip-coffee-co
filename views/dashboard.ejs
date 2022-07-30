@@ -8,11 +8,19 @@
     <script defer src="js/dashboard.js"></script>
     <title>Dashboard</title>
 </head>
-<body>
-    <div class="top-page">
-        <h1>Role: </h1>
-        <h1>logo</h1>
-        <h1 id="employee-name">Name</h1>
-    </div>
-</body>
+    <header>
+        <h1 id="role">Role</h1>
+        <h1>Hip-Coffee-Co</h1>
+        <% if(currentUser) {%>
+            <h1><%= currentUser.username %></h1>
+        <% } else { %>
+            <h1><a href="login" id="employee-name">login</a></h1>
+        <% } %>
+    </header>
+    <main>
+        <div class="middle-page">
+            <button id="clock-in" action="submit">Clock-In</button>
+            <button id="log-out" action="submit">Log-out</button>
+        </div>
+    </main>
 </html>

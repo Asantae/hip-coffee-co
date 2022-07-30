@@ -53,6 +53,6 @@ async function login(event){
         sessionStorage.setItem('token', result.token)
         window.location.href = 'dashboard'
     } else {
-        alert(result)
+        alert('Invalid username/password')
     }
 }

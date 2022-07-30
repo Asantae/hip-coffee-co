@@ -1,5 +1,5 @@
 function dashboardStatus(result){
-    document.querySelector('#employee-name').innerHTML = result.data.username;
+    document.querySelector('#role').innerHTML = result.data.role;
 
     
 }
@@ -15,12 +15,17 @@ async function verify(){
             token
         })
     }).then((res) => res.json())
-    console.log(result.data.username)
-    if (result.status === 'ok') {
+    if  (result.error && (result.error == 'TokenExpiredError')) {
+        console.log(result.error.name)
+        window.sessionStorage.clear()
+        window.location.href = "login"
+    }
+    if (result.status && (result.status === 'ok')) {
         dashboardStatus(result)
         alert('You have logged in successfully')
 
     } else {
+        window.location.href = "login"
         console.log('You are still not logged in')
     }  
 }

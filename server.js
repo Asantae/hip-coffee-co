@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const User = require('./model/user')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const { db } = require('./model/user')
 const app = express()
 
 mongoose.connect(process.env.mongoBase, {
@@ -33,9 +34,11 @@ app.get('/login', function(req, res) {
 app.get('/register', function(req, res) {
     res.render(path.join(__dirname + '/views/register.ejs'))
 })
-app.get('/dashboard', function(req, res) {
-    res.render(path.join(__dirname + '/views/dashboard.ejs'))
+app.get('/dashboard', async (req, res) => {
+    const currentUser = await User.findOne({username: 'asantaetest'}).lean()
+    res.render(path.join(__dirname + '/views/dashboard.ejs'), {currentUser})
 })
+
 app.get('/orders', function(req, res) {
     res.render(path.join(__dirname + '/views/orders.ejs'))
 })
@@ -94,7 +97,8 @@ app.post('/login', async (req, res) => {
         const token = jwt.sign({
             id: user._id,
             username: user.username,
-            lastLogged: lastLoggedInAt
+            lastLogged: lastLoggedInAt,
+            role: user.role
         }, process.env.JWT_SECRET, {
             expiresIn: '12h'
         })
@@ -109,7 +113,8 @@ app.post('/login', async (req, res) => {
                 lastLogged: lastLoggedInAt,
             }
         )
-        res.json({ 
+        res.json({
+            user: username, 
             status: 'ok',
             token: token,
             login: true,
@@ -130,8 +135,20 @@ app.post('/dashboard', async (req, res) => {
     const user = await User.findOne({ token }).lean()
 
     if(token && user) {
-        /// Verify the token using jwt.verify method
+        // Verify the token using jwt.verify method
+        try {
+            jwt.verify(token, process.env.JWT_SECRET)    
+        } catch(err){
+            console.log('this is your error: ' + err.name)
+            res.json ({
+                error: err.name
+            })
+                
+        }
+        
         const decode = jwt.verify(token, process.env.JWT_SECRET)
+
+        
 
         //  Return response with decode data
         res.json({
@@ -146,12 +163,12 @@ app.post('/dashboard', async (req, res) => {
             data: "error",
             error: 'something went wrong',
         });
-        console.log('token doesnt exist here')
+        res.redirect('/login')
     }
 })
 
 app.post('/orders'), async (req, res) => {
-    
+
 }
 
 app.listen(process.env.PORT, () => {

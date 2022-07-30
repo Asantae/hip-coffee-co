@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema(
     accessToken: { type: String, default: null },
     loggedIn: { type: Boolean, default: false },
     lastLogged: { type: String, default: false},
-    adminPrivilege: { type: Boolean, default: false }
+    role: {type: String, default: 'Cashier' }
     },
     { collection: 'user'}
 )
