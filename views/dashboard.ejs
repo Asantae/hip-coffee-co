@@ -11,16 +11,13 @@
     <header>
         <h1 id="role">Role</h1>
         <h1>Hip-Coffee-Co</h1>
-        <% if(currentUser) {%>
-            <h1><%= currentUser.username %></h1>
-        <% } else { %>
-            <h1><a href="login" id="employee-name">login</a></h1>
-        <% } %>
+        <h1 id="employee-name"><a href="login">login</a></h1>
     </header>
     <main>
         <div class="middle-page">
-            <button id="clock-in" action="submit">Clock-In</button>
-            <button id="log-out" action="submit">Log-out</button>
+            <button type="button" id="clock-in">Clock-In</button>
+            <button type="button" id="view-menu">View Menu</button>
+            <button type="button" id="log-out">Log-out</button>
         </div>
     </main>
 </html>

@@ -11,7 +11,10 @@ header {
     position: fixed;
     min-width: 100vw;
     padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
     color: white;
+    
 
 }
 
@@ -60,6 +63,7 @@ ul {
     font-size: 18px;
     padding-bottom: 3px;
     margin-top: 15px;
+
 }
 
 .error {
@@ -84,8 +88,9 @@ ul {
 
 .middle-page{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
     align-items: center;
+    flex-wrap: wrap;
     height: 100vh;
 }
 
@@ -95,9 +100,9 @@ ul {
 }
 
 .middle-page > button {
-    height: 65px;
-    width: 160px;
-    font-size: 20px;
+    height: 110px;
+    width: 250px;
+    font-size: 25px;
 }
 
 /* Orders page */

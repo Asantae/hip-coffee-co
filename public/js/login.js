@@ -49,10 +49,23 @@ async function login(event){
         })
     }).then((res) => res.json())
     if (result.status === 'ok' && result.login === true) {
-        window.sessionStorage.clear()
-        sessionStorage.setItem('token', result.token)
+        let x = JSON.stringify(result)
+        deleteCookie()
+        setCookie(x)
         window.location.href = 'dashboard'
     } else {
         alert('Invalid username/password')
     }
+}
+
+function setCookie(x){
+    const d = new Date()
+    d.setTime(d.getTime() + (12*60*60*1000))
+    let expires = 'expires='+d.toUTCString
+    document.cookie = 'jsonCookie=' + x + ';' + expires + ';path=/'
+}
+
+function deleteCookie(){
+    let y = document.cookie + ';'
+    document.cookie = y + 'expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'                                                                                                                            
 }
