@@ -1,6 +1,7 @@
 const clockIn = document.querySelector("#clock-in")
 const logOut = document.querySelector("#log-out")
 const viewMenu = document.querySelector("#view-menu")
+const editMenu = document.querySelector("#edit-items")
 viewMenu.addEventListener('click', () => {
     console.log('viewing menu')
 })
@@ -13,8 +14,17 @@ clockIn.addEventListener('click', () => {
     window.location.href = 'orders'
 })
 
+editMenu.addEventListener('click', () => {
+    window.location.href = 'admin-functions'
+})
+
 function dashboardStatus(result){
-    document.querySelector('#role').innerHTML = result.data.role;
+    if(result.admin){
+        document.querySelector('#role').innerHTML = 'Admin'
+    } else {
+        document.querySelector('#role').innerHTML = result.data.role;    
+    }
+    
     document.querySelector('#employee-name').innerHTML = result.data.username;
 }
 
@@ -41,16 +51,16 @@ async function verify(){
             token
         })
     }).then((res) => res.json())
-    if  (result.error && (result.error == 'TokenExpiredError')) {
-        console.log(result.error.name)
+    if(result.admin){
+        alert('an admin exists')
+    }
+    if(result.error && (result.error == 'TokenExpiredError')){
         window.location.href = "login"
     }
-    if (result.status && (result.status === 'ok') && document.cookie !== '') {
+    if(result.status && (result.status === 'ok') && document.cookie !== ''){
         dashboardStatus(result)
-
     } else {
         window.location.href = "login"
-        console.log('You are still not logged in')
     }  
 }
-verify()
+window.onload = verify()

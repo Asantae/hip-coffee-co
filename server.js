@@ -35,8 +35,7 @@ app.get('/register', function(req, res) {
     res.render(path.join(__dirname + '/views/register.ejs'))
 })
 app.get('/dashboard', async (req, res) => {
-    const currentUser = await User.findOne({username: 'asantaetest'}).lean()
-    res.render(path.join(__dirname + '/views/dashboard.ejs'), {currentUser})
+    res.render(path.join(__dirname + '/views/dashboard.ejs'))
 })
 
 app.get('/orders', function(req, res) {
@@ -134,28 +133,34 @@ app.post('/dashboard', async (req, res) => {
     const { token } = req.body
     const user = await User.findOne({ token }).lean()
 
+    // Verify the token using jwt.verify method
     if(token && user) {
-        // Verify the token using jwt.verify method
         try {
             jwt.verify(token, process.env.JWT_SECRET)    
         } catch(err){
             console.log('this is your error: ' + err.name)
             res.json ({
                 error: err.name
-            })
-                
+            })    
         }
-        
         const decode = jwt.verify(token, process.env.JWT_SECRET)
 
-        
-
         //  Return response with decode data
-        res.json({
-            login: true,
-            data: decode,
-            status: 'ok',
-        });
+        if(user.admin){
+            res.json({
+                login: true,
+                data: decode,
+                status: 'ok',
+                admin: user.admin
+            })
+        } else if (!user.admin){
+            res.json({
+                login: true,
+                data: decode,
+                status: 'ok',
+            }); 
+        }
+        
     } else {
         // Return with error if jwt does not match
         res.json({
@@ -168,7 +173,38 @@ app.post('/dashboard', async (req, res) => {
 })
 
 app.post('/orders'), async (req, res) => {
+    const { token } = req.body
+    const user = await User.findOne({ token }).lean()
 
+    if(token && user) {
+
+        // Verify the token using jwt.verify method
+        try {
+            jwt.verify(token, process.env.JWT_SECRET)    
+        } catch(err){
+            console.log('this is your error: ' + err.name)
+            res.json ({
+                error: err.name
+            })     
+        }
+        const decode = jwt.verify(token, process.env.JWT_SECRET)
+
+        //  Return response with decode data
+        res.json({
+            login: true,
+            data: decode,
+            status: 'ok',
+        });
+    } else {
+
+        // Return with error if jwt does not match
+        res.json({
+            login: false,
+            data: "error",
+            error: 'something went wrong',
+        });
+        res.redirect('/login')
+    }
 }
 
 app.listen(process.env.PORT, () => {

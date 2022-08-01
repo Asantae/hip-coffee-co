@@ -30,7 +30,6 @@ function clearMessages(){
     passwordInput.classList.remove("error-border");
 }
 
-
 async function login(event){
     event.preventDefault()
     validateForm()

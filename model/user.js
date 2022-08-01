@@ -6,7 +6,8 @@ const UserSchema = new mongoose.Schema(
     password: { type: String, required: true },
     accessToken: { type: String, default: null },
     loggedIn: { type: Boolean, default: false },
-    lastLogged: { type: String, default: false},
+    lastLogged: { type: String, default: null},
+    admin: { type: Boolean, default: false },
     role: {type: String, default: 'Cashier' }
     },
     { collection: 'user'}

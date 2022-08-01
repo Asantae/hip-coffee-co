@@ -15,3 +15,26 @@ function deleteCookie(){
     let y = document.cookie + ';'
     document.cookie = y + 'expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'                                                                                                                            
 }
+
+async function verify(){
+    x = getCookie()
+    const token = x.token
+    const result = await fetch('/orders', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            token
+        })
+    }).then((res) => res.json())
+    if  (result.error && (result.error == 'TokenExpiredError')) {
+        window.location.href = "login"
+    }
+    if (result.status && (result.status === 'ok') && document.cookie !== '') {
+        
+    } else {
+        window.location.href = "login"
+    } 
+}
+window.onload = verify()
