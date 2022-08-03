@@ -1,22 +1,6 @@
-const clockIn = document.querySelector("#clock-in")
-const logOut = document.querySelector("#log-out")
-const viewMenu = document.querySelector("#view-menu")
-const editMenu = document.querySelector("#edit-items")
-viewMenu.addEventListener('click', () => {
-    window.location.href = 'view-menu'
-})
-logOut.addEventListener('click', () => {
-    deleteCookie()
-    window.location.href = 'login'
-})
+const itemForm = document.querySelector('#item-form');
+itemForm.addEventListener('submit', submitItem)
 
-clockIn.addEventListener('click', () => {
-    window.location.href = 'orders'
-})
-
-editMenu.addEventListener('click', () => {
-    window.location.href = 'admin-functions'
-})
 
 function dashboardStatus(result){
     if(result.data.isAdmin){
@@ -61,4 +45,33 @@ async function verify(){
     }  
     console.log(result)
 }
+
+//controls what happens when an item is submitted
+async function submitItem(event){
+    event.preventDefault()
+    console.log('submitting new item')
+    const itemName = document.getElementById('item-name').value
+    const itemPrice = document.getElementById('new-item-price').value
+    const ingredients = document.getElementById('new-item-ingredients').value
+    const category = document.getElementById('new-category')
+    const categoryChoice = category.options[category.selectedIndex].value
+    const result = await fetch('/admin-functions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            itemName,
+            categoryChoice,
+            itemPrice,
+            ingredients
+        })
+    }).then((res) => res.json())
+    if (result.status === 'ok') {
+        console.log('new item created')
+    } else {
+        alert('something went wrong')
+    }
+}
+
 window.onload = verify()

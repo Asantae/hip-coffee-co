@@ -4,6 +4,7 @@ const path = require('path')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const User = require('./model/user')
+const Item = require('./model/item')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { db } = require('./model/user')
@@ -37,7 +38,12 @@ app.get('/register', function(req, res) {
 app.get('/dashboard', async (req, res) => {
     res.render(path.join(__dirname + '/views/dashboard.ejs'))
 })
-
+app.get('/admin-functions', async (req, res) => {
+    res.render(path.join(__dirname + '/views/admin-functions.ejs'))
+})
+app.get('/view-menu', async (req, res) => {
+    res.render(path.join(__dirname + '/views/view-menu.ejs'))
+})
 app.get('/orders', function(req, res) {
     res.render(path.join(__dirname + '/views/orders.ejs'))
 })
@@ -97,7 +103,8 @@ app.post('/login', async (req, res) => {
             id: user._id,
             username: user.username,
             lastLogged: lastLoggedInAt,
-            role: user.role
+            role: user.role,
+            isAdmin: user.admin
         }, process.env.JWT_SECRET, {
             expiresIn: '12h'
         })
@@ -151,7 +158,6 @@ app.post('/dashboard', async (req, res) => {
                 login: true,
                 data: decode,
                 status: 'ok',
-                admin: user.admin
             })
         } else if (!user.admin){
             res.json({
@@ -206,6 +212,18 @@ app.post('/orders'), async (req, res) => {
         res.redirect('/login')
     }
 }
+
+app.post('/admin-functions'), async (req, res) => {
+    const { itemName, categoryChoice, itemPrice, ingredients } = req.body
+    try {
+        const response = await Item.create({
+            username,
+            password
+        })
+    } catch {
+
+    }
+} 
 
 app.listen(process.env.PORT, () => {
     console.log(`listening on port ${process.env.PORT}`)

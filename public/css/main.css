@@ -18,6 +18,10 @@ header {
 
 }
 
+h1 {
+    color: white;
+}
+
 button {
     border: none;
     outline: none;
@@ -165,4 +169,25 @@ ul {
     width: 100%;
     background-color: tan;
     
+}
+
+/*  Menu page  */
+
+
+
+.menu-main-body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    flex-wrap: wrap;
+}
+
+.menu-items-body{
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    flex-direction: column;
+    margin: 100px;
 }

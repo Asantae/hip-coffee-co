@@ -4,8 +4,8 @@ const ItemSchema = new mongoose.Schema(
     {
     name: { type: String, required: true, unique: true },
     category: { type: String, required: true, default: 'drink' },
-    price: { type: Int32, required: true, default: 0.00 },
-    ingrediants: { type: String, default: 'none'}
+    price: { type: Number, required: true, default: 0.00 },
+    ingredients: { type: String, default: 'none'}
     },
     { collection: 'item'}
 )

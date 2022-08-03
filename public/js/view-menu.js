@@ -1,23 +1,3 @@
-const clockIn = document.querySelector("#clock-in")
-const logOut = document.querySelector("#log-out")
-const viewMenu = document.querySelector("#view-menu")
-const editMenu = document.querySelector("#edit-items")
-viewMenu.addEventListener('click', () => {
-    window.location.href = 'view-menu'
-})
-logOut.addEventListener('click', () => {
-    deleteCookie()
-    window.location.href = 'login'
-})
-
-clockIn.addEventListener('click', () => {
-    window.location.href = 'orders'
-})
-
-editMenu.addEventListener('click', () => {
-    window.location.href = 'admin-functions'
-})
-
 function dashboardStatus(result){
     if(result.data.isAdmin){
         document.querySelector('#role').innerHTML = 'Admin'
