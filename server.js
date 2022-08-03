@@ -38,7 +38,7 @@ app.get('/register', function(req, res) {
 app.get('/dashboard', async (req, res) => {
     res.render(path.join(__dirname + '/views/dashboard.ejs'))
 })
-app.get('/admin-functions', async (req, res) => {
+app.get('/admin', async (req, res) => {
     res.render(path.join(__dirname + '/views/admin-functions.ejs'))
 })
 app.get('/view-menu', async (req, res) => {
@@ -213,15 +213,20 @@ app.post('/orders'), async (req, res) => {
     }
 }
 
-app.post('/admin-functions'), async (req, res) => {
+app.post('/admin'), async (req, res) => {
     const { itemName, categoryChoice, itemPrice, ingredients } = req.body
     try {
         const response = await Item.create({
-            username,
-            password
+            itemName,
+            categoryChoice,
+            itemPrice,
+            ingredients
         })
-    } catch {
-
+        console.log("item created successfully", response)
+        return res.json({ status: 'ok', response })
+    } catch (error) {
+        console.log(error)
+        throw error
     }
 } 
 

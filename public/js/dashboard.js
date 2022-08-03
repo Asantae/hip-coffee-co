@@ -15,7 +15,7 @@ clockIn.addEventListener('click', () => {
 })
 
 editMenu.addEventListener('click', () => {
-    window.location.href = 'admin-functions'
+    window.location.href = 'admin'
 })
 
 function dashboardStatus(result){

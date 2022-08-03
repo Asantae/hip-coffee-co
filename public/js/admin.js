@@ -49,13 +49,15 @@ async function verify(){
 //controls what happens when an item is submitted
 async function submitItem(event){
     event.preventDefault()
+    
     console.log('submitting new item')
     const itemName = document.getElementById('item-name').value
     const itemPrice = document.getElementById('new-item-price').value
     const ingredients = document.getElementById('new-item-ingredients').value
     const category = document.getElementById('new-category')
     const categoryChoice = category.options[category.selectedIndex].value
-    const result = await fetch('/admin-functions', {
+    
+    const result = await fetch('/admin', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
